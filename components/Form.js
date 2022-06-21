@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 export default function Form() {
+	const [sending, setsending] = useState(false);
 	const navigation = useNavigation();
 	const [emailerror, setemailerror] = useState(false);
 	const [phoneerror, setephoneerror] = useState(false);
@@ -26,10 +27,14 @@ export default function Form() {
 	}
 
 	async function submit() {
+		if (sending === true) {
+			console.log('sending in progress');
+			return;
+		}
 		if (check() === false) return;
 		console.log('every thing is correct');
 		let url = `https://email-api-dusky.vercel.app/?email=${email}&name=${name}&phone=${phone}&message=${message}`;
-
+		setsending(true);
 		let res = await fetch(url, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -38,11 +43,17 @@ export default function Form() {
 		if (res.status == 200) {
 			navigation.navigate('Sent');
 		}
+		setsending(false);
 	}
 	return (
 		<View style={styles.container}>
-			<TextInput value={name} onChangeText={(val) => setname(val)} placeholder='Name' style={[styles.input]} />
-			<TextInput value={email} onChangeText={(val) => setemail(val)} placeholder='Email' style={[styles.input]} />
+			<TextInput value={name} onChangeText={(val) => setname(val)} placeholder='Name*' style={[styles.input]} />
+			<TextInput
+				value={email}
+				onChangeText={(val) => setemail(val)}
+				placeholder='Email*'
+				style={[styles.input]}
+			/>
 			<Text style={[styles.error, emailerror === false ? { display: 'none' } : { display: 'flex' }]}>
 				Email is not correct
 			</Text>
@@ -50,7 +61,7 @@ export default function Form() {
 			<TextInput
 				value={phone}
 				onChangeText={(val) => setephone(val)}
-				placeholder='Phone'
+				placeholder='Phone*'
 				style={[styles.input]}
 			/>
 			<Text style={[styles.error, phoneerror === false ? { display: 'none' } : { display: 'flex' }]}>
@@ -61,7 +72,7 @@ export default function Form() {
 				onChangeText={(val) => setemessage(val)}
 				multiline={true}
 				editable
-				placeholder='Message'
+				placeholder='Message*'
 				style={[styles.input, styles.message]}
 			/>
 			<TouchableOpacity onPress={() => submit()} style={styles.button}>
