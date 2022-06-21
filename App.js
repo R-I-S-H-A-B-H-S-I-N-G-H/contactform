@@ -1,19 +1,16 @@
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
-import Form from './components/Form';
-import Navbar from './components/Navbar';
+import Home from './components/Home';
+import Sent from './components/pages/Sent';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+const Stack = createNativeStackNavigator();
 export default function App() {
 	return (
-		<View style={styles.container}>
-			<Navbar />
-			<Form />
-		</View>
+		<NavigationContainer>
+			<Stack.Navigator screenOptions={{ headerShown: false }}>
+				<Stack.Screen name='Home' component={Home} />
+				<Stack.Screen name='Sent' component={Sent} />
+			</Stack.Navigator>
+		</NavigationContainer>
 	);
 }
-
-const styles = StyleSheet.create({
-	container: {
-		backgroundColor: '#FFFF',
-		height: '100%',
-	},
-});
